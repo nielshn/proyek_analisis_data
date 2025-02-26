@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load Data
-day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
-hour_df = pd.read_csv("../data/hour.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
+hour_df = pd.read_csv("data/hour.csv", parse_dates=['dteday'])
 
 # Merge dataset
 all_df = pd.merge(hour_df, day_df[['dteday', 'cnt']],
