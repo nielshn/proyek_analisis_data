@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load dataset
-day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
 
 # Title
 st.title("Bike Sharing Data Dashboard")
