@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load dataset
-day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
 
 # Mapping season and weathersit to readable labels
 season_mapping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
