@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load dataset
-day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
 
 # Mapping season and weathersit to readable labels
 season_mapping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
@@ -32,10 +32,6 @@ filtered_df = day_df[
 st.title("Bike Sharing Data Dashboard")
 
 # Data Overview
-# st.subheader("Data Overview")
-# st.write(filtered_df.head())
-
-# Data Overview
 st.subheader("Data Overview")
 st.write(day_df.head())
 
@@ -59,7 +55,6 @@ sns.boxplot(y=filtered_df['cnt'], color='skyblue')
 plt.ylabel("Jumlah Peminjaman Sepeda")
 plt.title("Distribusi Peminjaman Sepeda Harian")
 st.pyplot(plt)
-
 
 # Pengaruh Kondisi Cuaca terhadap Peminjaman Sepeda
 st.subheader("Pengaruh Kondisi Cuaca terhadap Peminjaman Sepeda")
