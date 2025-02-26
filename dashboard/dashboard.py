@@ -1,52 +1,63 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Load Data
-day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
-hour_df = pd.read_csv("data/hour.csv", parse_dates=['dteday'])
+# Load dataset
+day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
 
-# Merge dataset
-all_df = pd.merge(hour_df, day_df[['dteday', 'cnt']],
-                  on='dteday', suffixes=('_hour', '_day'))
-all_df.to_csv("all_data.csv", index=False)
+# Title
+st.title("Bike Sharing Data Dashboard")
 
-st.title("Bike Sharing Dashboard")
-st.sidebar.header("Filter Data")
+# Data Overview
+st.subheader("Data Overview")
+st.write(day_df.head())
 
-# Data Filter
-date_range = st.sidebar.date_input(
-    "Select Data Range", [all_df['dteday'].min(), all_df['dteday'].max()])
-filtered_df = all_df[(all_df['dteday'] >= pd.to_datetime(date_range[0])) & (
-    all_df['dteday'] <= pd.to_datetime(date_range[1]))]
+# Data Cleaning Summary
+st.subheader("Data Cleaning")
+st.write("Data Harian Duplikat:", day_df.duplicated().sum())
+st.write("Missing Values:", day_df.isna().sum().sum())
 
-# Line Chart: Tren Pengguaan Sepeda
-st.subheader("Tren Pengguaan Sepeda Sepanjang Tahun")
-fig, ax = plt.subplots(figsize=(12, 5))
+# Tren Penggunaan Sepeda Sepanjang Tahun
+st.subheader("Tren Penggunaan Sepeda Sepanjang Tahun")
+monthly_trend = day_df.groupby(day_df['dteday'].dt.to_period("M")).agg({
+    "cnt": "sum"}).reset_index()
+plt.figure(figsize=(12, 5))
+
 sns.lineplot(
-    x=filtered_df['dteday'],
-    y=filtered_df['cnt_day'],
-    color='blue',
-    ax=ax
+    x=monthly_trend['dteday'].astype(str),
+    y=monthly_trend['cnt'],
+    color='blue'
 )
-plt.xlabel("Tanggal")
+plt.xticks(rotation=45)
+plt.xlabel("Bulan")
 plt.ylabel("Jumlah Peminjaman Sepeda")
-st.pyplot(fig)
+plt.title("Tren Penggunaan Sepeda Sepanjang Tahun")
+st.pyplot(plt)
 
-# Boxplot: Pengaruh Cuaca terhadap Peminjaman Sepeda
+# Distribusi Jumlah Peminjaman Sepeda (Boxplot)
+st.subheader("Distribusi Jumlah Peminjaman Sepeda Harian")
+plt.figure(figsize=(10, 6))
+sns.boxplot(y=day_df['cnt'], color='skyblue')
+plt.ylabel("Jumlah Peminjaman Sepeda")
+plt.title("Distribusi Peminjaman Sepeda Harian")
+st.pyplot(plt)
+
+# Pengaruh Kondisi Cuaca terhadap Peminjaman Sepeda
 st.subheader("Pengaruh Kondisi Cuaca terhadap Peminjaman Sepeda")
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.boxplot(
-    x=filtered_df['weathersit'],
-    y=filtered_df['cnt_day'],
-    palette='coolwarm',
-    ax=ax
-)
+weather_impact = day_df.groupby("weathersit").agg(
+    {"cnt": "mean"}).reset_index()
+plt.figure(figsize=(10, 5))
+sns.barplot(x=weather_impact['weathersit'],
+            y=weather_impact['cnt'], palette='coolwarm')
 plt.xlabel("Kondisi Cuaca (1=Baik, 2=Normal, 3=Buruk, 4=Sangat Buruk)")
-plt.ylabel("Jumlah Peminjaman Sepeda")
-st.pyplot(fig)
+plt.ylabel("Rata-rata Peminjaman Sepeda")
+plt.title("Pengaruh Kondisi Cuaca terhadap Jumlah Peminjaman Sepeda")
+st.pyplot(plt)
 
-# Show Dataset
-st.subheader("Dataset")
-st.dataframe(filtered_df.head())
+# Korelasi Antar Variabel
+st.subheader("Heatmap Korelasi Antar Variabel")
+numerical_day_df = day_df.select_dtypes(include=['number'])
+plt.figure(figsize=(10, 6))
+sns.heatmap(numerical_day_df.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+st.pyplot(plt)
