@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 # Load dataset
-day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
 
 # Mapping season and weathersit to readable labels
 season_mapping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
@@ -35,10 +35,12 @@ else:
     start_date, end_date = min_date, max_date
 
 selected_season = st.sidebar.multiselect(
-    "Pilih Musim", list(season_mapping.values()), default=list(season_mapping.values())
+    "Pilih Musim", list(season_mapping.values()),
+    default=list(season_mapping.values())
 )
 selected_weather = st.sidebar.multiselect(
-    "Pilih Kondisi Cuaca", list(weather_mapping.values()), default=list(weather_mapping.values())
+    "Pilih Kondisi Cuaca", list(weather_mapping.values()),
+    default=list(weather_mapping.values())
 )
 
 # Filter Data
@@ -68,10 +70,10 @@ monthly_trend = filtered_df.groupby(
     filtered_df['dteday'].dt.to_period("M")).agg({"cnt": "sum"}).reset_index()
 
 plt.figure(figsize=(12, 5))
-sns.lineplot(
+sns.barplot(
     x=monthly_trend['dteday'].astype(str),
     y=monthly_trend['cnt'],
-    color='blue'
+    color='skyblue'
 )
 plt.xticks(rotation=45)
 plt.xlabel("Bulan")
