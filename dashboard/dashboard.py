@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 
 # Load dataset
-day_df = pd.read_csv("data/day.csv", parse_dates=['dteday'])
+day_df = pd.read_csv("../data/day.csv", parse_dates=['dteday'])
 
-# Mapping season and weathersit to readable labels
+# Mapping season and weathersit to readable labelsk
 season_mapping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
 weather_mapping = {1: "Clear", 2: "Cloudy", 3: "Rainy", 4: "Stormy"}
 
